@@ -3,7 +3,7 @@
 import { UserPlus } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import api, { apiErrorMessage } from "@/lib/api";
 
 export default function SignupPage() {
@@ -16,6 +16,15 @@ export default function SignupPage() {
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const trimmedName = form.name.trim();
+  const trimmedEmail = form.email.trim().toLowerCase();
+  const validationError = useMemo(() => {
+    if (!trimmedName) return "Enter your name to continue.";
+    if (!trimmedEmail) return "Enter your email address to continue.";
+    if (!form.password) return "Enter a password to continue.";
+    if (form.password.length < 8) return "Password must be at least 8 characters long.";
+    return "";
+  }, [form.password, trimmedEmail, trimmedName]);
 
   const update = (field, value) => {
     setForm((current) => ({ ...current, [field]: value }));
@@ -23,13 +32,23 @@ export default function SignupPage() {
 
   const submit = async (event) => {
     event.preventDefault();
+    if (validationError) {
+      setError(validationError);
+      return;
+    }
+
     setLoading(true);
     setError("");
 
     try {
-      const { data } = await api.post("/auth/signup", form);
+      const payload = {
+        ...form,
+        name: trimmedName,
+        email: trimmedEmail
+      };
+      const { data } = await api.post("/auth/signup", payload);
       sessionStorage.setItem("schedulix-signup-user-id", data.userId);
-      sessionStorage.setItem("schedulix-signup-email", form.email);
+      sessionStorage.setItem("schedulix-signup-email", trimmedEmail);
       router.push(`/verify-otp?userId=${encodeURIComponent(data.userId)}`);
     } catch (err) {
       setError(apiErrorMessage(err));
@@ -66,7 +85,7 @@ export default function SignupPage() {
                 <span className="mb-1 block text-sm font-semibold">Name</span>
                 <input
                   className="form-input"
-                  required
+                  autoFocus
                   value={form.name}
                   onChange={(event) => update("name", event.target.value)}
                 />
@@ -76,7 +95,6 @@ export default function SignupPage() {
                 <input
                   className="form-input"
                   type="email"
-                  required
                   value={form.email}
                   onChange={(event) => update("email", event.target.value)}
                 />
@@ -86,8 +104,6 @@ export default function SignupPage() {
                 <input
                   className="form-input"
                   type="password"
-                  minLength={8}
-                  required
                   value={form.password}
                   onChange={(event) => update("password", event.target.value)}
                 />
@@ -104,9 +120,16 @@ export default function SignupPage() {
                 </select>
               </label>
 
-              {error ? <p className="text-sm font-semibold text-danger">{error}</p> : null}
+              {error ? (
+                <p className="text-sm font-semibold text-danger">{error}</p>
+              ) : validationError ? (
+                <p className="text-sm text-muted">{validationError}</p>
+              ) : null}
 
-              <button className="btn btn-primary w-full" disabled={loading}>
+              <button
+                className="btn btn-primary w-full"
+                disabled={loading || Boolean(validationError)}
+              >
                 <UserPlus size={16} />
                 {loading ? "Creating account" : "Sign up"}
               </button>
