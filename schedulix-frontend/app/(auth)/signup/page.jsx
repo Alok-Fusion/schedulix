@@ -49,6 +49,9 @@ export default function SignupPage() {
       const { data } = await api.post("/auth/signup", payload);
       sessionStorage.setItem("schedulix-signup-user-id", data.userId);
       sessionStorage.setItem("schedulix-signup-email", trimmedEmail);
+      if (data.otp) {
+        sessionStorage.setItem("schedulix-signup-otp", data.otp);
+      }
       router.push(`/verify-otp?userId=${encodeURIComponent(data.userId)}`);
     } catch (err) {
       setError(apiErrorMessage(err));

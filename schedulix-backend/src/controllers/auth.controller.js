@@ -92,21 +92,34 @@ export const signup = asyncHandler(async (req, res) => {
   const verification = issueVerificationChallenge(user);
   await user.save();
 
+  let emailSent = false;
+
   try {
     await sendVerificationEmail({
       to: user.email,
       otp: verification.otp,
       link: verification.link
     });
+    emailSent = true;
   } catch (error) {
-    await User.deleteOne({ _id: user._id });
-    throw error;
+    console.warn(
+      `[auth] Verification email to ${user.email} failed:`,
+      error.message || error
+    );
   }
 
-  res.status(201).json({
-    message: "Signup successful. Verify your account using OTP or email link.",
+  const payload = {
+    message: emailSent
+      ? "Signup successful. Verify your account using OTP or email link."
+      : "Signup successful. Email delivery failed — use the OTP below to verify.",
     userId: user._id
-  });
+  };
+
+  if (!emailSent) {
+    payload.otp = verification.otp;
+  }
+
+  res.status(201).json(payload);
 });
 
 export const verifyOtp = asyncHandler(async (req, res) => {

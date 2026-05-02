@@ -17,14 +17,20 @@ export default function VerifyOtpPage() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
+    const savedOtp = sessionStorage.getItem("schedulix-signup-otp") || "";
     setForm((current) => ({
       ...current,
       userId:
         params.get("userId") ||
         sessionStorage.getItem("schedulix-signup-user-id") ||
         "",
-      email: sessionStorage.getItem("schedulix-signup-email") || ""
+      email: sessionStorage.getItem("schedulix-signup-email") || "",
+      otp: savedOtp
     }));
+    if (savedOtp) {
+      setMessage("OTP auto-filled — email delivery was unavailable. Click verify to continue.");
+      sessionStorage.removeItem("schedulix-signup-otp");
+    }
   }, []);
 
   const update = (field, value) => {
