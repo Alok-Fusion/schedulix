@@ -121,8 +121,9 @@ export const verifyEmailTransport = async () => {
     env.nodeEnv === "production" &&
     /localhost/i.test(env.clientBaseUrl || "")
   ) {
-    throw new Error(
-      "CLIENT_BASE_URL still points to localhost. Set it to your deployed frontend URL so verification and reset links work in production."
+    console.warn(
+      "[email] WARNING: CLIENT_BASE_URL still points to localhost. " +
+        "Set it to your deployed frontend URL so verification and reset links work in production."
     );
   }
 
@@ -152,14 +153,21 @@ export const verifyEmailTransport = async () => {
     return;
   }
 
-  await transporter.verify();
-  transportVerified = true;
-
-  if (env.nodeEnv !== "test") {
-    console.log(
-      `[email] SMTP ready on ${env.smtp.host}:${env.smtp.port} as ${env.emailFrom}`
+  try {
+    await transporter.verify();
+    if (env.nodeEnv !== "test") {
+      console.log(
+        `[email] SMTP ready on ${env.smtp.host}:${env.smtp.port} as ${env.emailFrom}`
+      );
+    }
+  } catch (err) {
+    console.warn(
+      `[email] WARNING: SMTP verification failed (${err.code || err.message}). ` +
+        "The server will start anyway and attempt to send emails on demand."
     );
   }
+
+  transportVerified = true;
 };
 
 export const sendEmail = async ({ to, subject, text, html }) => {
