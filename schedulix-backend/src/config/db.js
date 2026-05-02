@@ -13,7 +13,9 @@ export const connectDB = async () => {
   });
 
   await mongoose.connect(env.mongoUri, {
-    autoIndex: env.nodeEnv !== "production"
+    autoIndex: env.nodeEnv !== "production",
+    tls: true,
+    tlsAllowInvalidCertificates: env.nodeEnv === "production"
   });
 };
 

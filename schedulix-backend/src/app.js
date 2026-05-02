@@ -10,8 +10,8 @@ import authRoutes from "./routes/auth.routes.js";
 import bookingRoutes from "./routes/booking.routes.js";
 import profileRoutes from "./routes/profile.routes.js";
 import slotRoutes from "./routes/slot.routes.js";
-import { ApiError } from "./utils/helpers.js";
 import uploadRoutes from "./routes/upload.routes.js";
+import { ApiError } from "./utils/helpers.js";
 import { uploadRootDir } from "./utils/uploads.js";
 
 const app = express();

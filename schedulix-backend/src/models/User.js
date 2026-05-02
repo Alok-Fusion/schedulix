@@ -31,7 +31,7 @@ const UserSchema = new mongoose.Schema(
     phone: {
       type: String,
       trim: true,
-      maxlength: 30
+      maxlength: 10
     },
     profileImageUrl: {
       type: String,
@@ -59,7 +59,7 @@ const UserSchema = new mongoose.Schema(
     emergencyContactPhone: {
       type: String,
       trim: true,
-      maxlength: 30
+      maxlength: 10
     },
     medicalRegistrationNo: {
       type: String,
