@@ -2,21 +2,22 @@ import axios from "axios";
 
 const resolveApiBaseUrl = () => {
   const configured = process.env.NEXT_PUBLIC_API_BASE_URL;
-  if (configured) return configured;
 
+  // In the browser, use hostname-based detection for deployed sites
   if (typeof window !== "undefined") {
     const host = window.location.hostname;
 
-    if (host === "schedulix-sage.vercel.app") {
-      return "https://schedulix-99ug.onrender.com";
-    }
-
     if (host !== "localhost" && host !== "127.0.0.1") {
+      // On deployed sites, prefer a non-localhost env var, otherwise use the Render URL
+      if (configured && !/localhost|127\.0\.0\.1/.test(configured)) {
+        return configured;
+      }
       return "https://schedulix-99ug.onrender.com";
     }
   }
 
-  return "http://localhost:5000";
+  // Local development — use env var or default
+  return configured || "http://localhost:5000";
 };
 
 export const API_BASE_URL = resolveApiBaseUrl();
