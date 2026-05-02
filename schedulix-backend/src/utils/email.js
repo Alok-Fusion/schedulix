@@ -5,72 +5,8 @@ import { ApiError } from "./helpers.js";
 let cachedTransporter;
 let transportVerified = false;
 
-const isResendProvider = () => env.emailProvider === "resend";
 const hasSmtpHost = () => Boolean(env.smtp.host);
 const hasSmtpAuth = () => Boolean(env.smtp.user && env.smtp.pass);
-
-const previewModeMessage = () =>
-  "[email] SMTP is not configured. Emails will be generated locally only.";
-
-const splitRecipients = (value) =>
-  Array.isArray(value)
-    ? value.filter(Boolean)
-    : String(value || "")
-        .split(",")
-        .map((item) => item.trim())
-        .filter(Boolean);
-
-const abortableDelay = (ms, controller) =>
-  setTimeout(() => controller.abort(`Email request exceeded ${ms}ms`), ms);
-
-const sendWithResend = async ({ to, subject, text, html }) => {
-  if (!env.resend.apiKey) {
-    throw new Error(
-      "RESEND_API_KEY is missing. Add it to the backend deployment environment."
-    );
-  }
-
-  const controller = new AbortController();
-  const timeout = abortableDelay(env.emailTimeoutMs, controller);
-
-  try {
-    const response = await fetch(`${env.resend.apiUrl}/emails`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${env.resend.apiKey}`,
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        from: env.emailFrom,
-        to: splitRecipients(to),
-        subject,
-        text,
-        html
-      }),
-      signal: controller.signal
-    });
-
-    const payload = await response.json().catch(() => ({}));
-
-    if (!response.ok) {
-      throw new Error(
-        payload?.message ||
-          payload?.error ||
-          `Resend API request failed with status ${response.status}`
-      );
-    }
-
-    if (env.nodeEnv !== "test") {
-      console.log(
-        `[email] Sent "${subject}" through Resend to ${splitRecipients(to).join(", ")}`
-      );
-    }
-
-    return payload;
-  } finally {
-    clearTimeout(timeout);
-  }
-};
 
 const getTransporter = () => {
   if (cachedTransporter) return cachedTransporter;
@@ -83,11 +19,13 @@ const getTransporter = () => {
   }
 
   if (hasSmtpHost()) {
+    const useSSL = env.smtp.port === 465;
+
     cachedTransporter = nodemailer.createTransport({
       host: env.smtp.host,
       port: env.smtp.port,
-      secure: env.smtp.secure,
-      requireTLS: !env.smtp.secure && env.smtp.port === 587,
+      secure: useSSL,
+      ...((!useSSL && env.smtp.port === 587) ? { requireTLS: true } : {}),
       auth:
         hasSmtpAuth()
           ? {
@@ -95,19 +33,20 @@ const getTransporter = () => {
               pass: env.smtp.pass
             }
           : undefined,
-      connectionTimeout: 15000,
-      greetingTimeout: 15000,
-      socketTimeout: 20000
+      connectionTimeout: 30000,
+      greetingTimeout: 30000,
+      socketTimeout: 30000
     });
     return cachedTransporter;
   }
 
   if (env.nodeEnv === "production") {
     throw new Error(
-      "SMTP is not configured for production. Set SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, EMAIL_FROM, and CLIENT_BASE_URL in your deployment environment."
+      "SMTP is not configured for production. Set SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS in your deployment environment."
     );
   }
 
+  // Local dev without SMTP — log emails to console
   cachedTransporter = nodemailer.createTransport({
     jsonTransport: true
   });
@@ -127,27 +66,13 @@ export const verifyEmailTransport = async () => {
     );
   }
 
-  if (isResendProvider()) {
-    if (!env.resend.apiKey) {
-      throw new Error(
-        "EMAIL_PROVIDER is set to resend but RESEND_API_KEY is missing."
-      );
-    }
-
-    transportVerified = true;
-
-    if (env.nodeEnv !== "test") {
-      console.log(`[email] Resend API ready as ${env.emailFrom}`);
-    }
-
-    return;
-  }
-
   const transporter = getTransporter();
 
   if (!hasSmtpHost()) {
     if (env.nodeEnv !== "test") {
-      console.log(previewModeMessage());
+      console.log(
+        "[email] SMTP is not configured. Emails will be generated locally only."
+      );
     }
     transportVerified = true;
     return;
@@ -172,10 +97,6 @@ export const verifyEmailTransport = async () => {
 
 export const sendEmail = async ({ to, subject, text, html }) => {
   try {
-    if (isResendProvider()) {
-      return await sendWithResend({ to, subject, text, html });
-    }
-
     const info = await getTransporter().sendMail({
       from: env.emailFrom,
       to,
