@@ -1,7 +1,25 @@
 import axios from "axios";
 
-export const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:5000";
+const resolveApiBaseUrl = () => {
+  const configured = process.env.NEXT_PUBLIC_API_BASE_URL;
+  if (configured) return configured;
+
+  if (typeof window !== "undefined") {
+    const host = window.location.hostname;
+
+    if (host === "schedulix-sage.vercel.app") {
+      return "https://schedulix-99ug.onrender.com";
+    }
+
+    if (host !== "localhost" && host !== "127.0.0.1") {
+      return "https://schedulix-99ug.onrender.com";
+    }
+  }
+
+  return "http://localhost:5000";
+};
+
+export const API_BASE_URL = resolveApiBaseUrl();
 
 export const api = axios.create({
   baseURL: API_BASE_URL,
