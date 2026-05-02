@@ -72,6 +72,10 @@ const defaultEmailFrom = smtpUser
   ? `Schedulix <${smtpUser}>`
   : "Schedulix <no-reply@schedulix.local>";
 const resolvedEmailFrom = readFirst("EMAIL_FROM", "SMTP_FROM", "MAIL_FROM");
+const resendApiKey = readFirst("RESEND_API_KEY");
+const emailProvider = (
+  readFirst("EMAIL_PROVIDER") || (resendApiKey ? "resend" : "smtp")
+).toLowerCase();
 const emailFrom =
   nodeEnv === "production" &&
   (!resolvedEmailFrom || /\.local>?$/i.test(resolvedEmailFrom))
@@ -100,6 +104,8 @@ export const env = {
   clientBaseUrl: normalizeBaseUrl(inferredClientBaseUrl, "http://localhost:3000"),
   corsOrigin,
   emailFrom,
+  emailProvider,
+  emailTimeoutMs: toNumber(readFirst("EMAIL_TIMEOUT_MS"), 15000),
   smtp: {
     host: smtpHost,
     port: toNumber(smtpPort, 587),
@@ -109,6 +115,10 @@ export const env = {
       smtpSecure === ""
         ? toNumber(smtpPort, 587) === 465
         : toBoolean(smtpSecure, false)
+  },
+  resend: {
+    apiKey: resendApiKey,
+    apiUrl: normalizeBaseUrl(readFirst("RESEND_API_URL"), "https://api.resend.com")
   },
   bcryptSaltRounds: toNumber(readFirst("BCRYPT_SALT_ROUNDS"), 12),
   defaultAdmin: {
