@@ -2,6 +2,10 @@ import bcrypt from "bcrypt";
 import env from "../config/env.js";
 import User from "../models/User.js";
 import { sendPasswordResetEmail, sendVerificationEmail } from "../utils/email.js";
+import {
+  buildPasswordResetLink,
+  buildVerificationLink
+} from "../utils/publicUrls.js";
 import { ApiError, asyncHandler, toPublicUser } from "../utils/helpers.js";
 import {
   createJWT,
@@ -36,9 +40,7 @@ const issueVerificationChallenge = (user) => {
   user.verificationToken = hashedToken;
   user.verificationTokenExpiry = new Date(Date.now() + LINK_TTL_MS);
 
-  const link = `${env.apiBaseUrl}/auth/verify-link?token=${encodeURIComponent(
-    rawToken
-  )}`;
+  const link = buildVerificationLink(rawToken);
 
   return { otp, link };
 };
@@ -89,11 +91,17 @@ export const signup = asyncHandler(async (req, res) => {
 
   const verification = issueVerificationChallenge(user);
   await user.save();
-  await sendVerificationEmail({
-    to: user.email,
-    otp: verification.otp,
-    link: verification.link
-  });
+
+  try {
+    await sendVerificationEmail({
+      to: user.email,
+      otp: verification.otp,
+      link: verification.link
+    });
+  } catch (error) {
+    await User.deleteOne({ _id: user._id });
+    throw error;
+  }
 
   res.status(201).json({
     message: "Signup successful. Verify your account using OTP or email link.",
@@ -235,9 +243,7 @@ export const forgotPassword = asyncHandler(async (req, res) => {
     user.resetTokenExpiry = new Date(Date.now() + LINK_TTL_MS);
     await user.save();
 
-    const link = `${env.apiBaseUrl}/auth/reset-password-link?token=${encodeURIComponent(
-      rawToken
-    )}`;
+    const link = buildPasswordResetLink(rawToken);
 
     await sendPasswordResetEmail({
       to: normalizedEmail,

@@ -1,0 +1,287 @@
+- generic [active] [ref=e1]:
+  - banner [ref=e2]:
+    - generic [ref=e4]:
+      - link "Scheduling Schedulix" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - img [ref=e7]
+        - generic [ref=e9]:
+          - generic [ref=e10]: Scheduling
+          - generic [ref=e11]: Schedulix
+      - navigation [ref=e12]:
+        - link "Home" [ref=e13] [cursor=pointer]:
+          - /url: /
+          - img [ref=e14]
+          - text: Home
+        - link "Services" [ref=e17] [cursor=pointer]:
+          - /url: /home
+          - img [ref=e18]
+          - text: Services
+        - link "Get started" [ref=e22] [cursor=pointer]:
+          - /url: /signup
+          - img [ref=e23]
+          - text: Get started
+      - generic [ref=e25]:
+        - link "Login" [ref=e26] [cursor=pointer]:
+          - /url: /login
+          - img [ref=e27]
+          - text: Login
+        - link "Create account" [ref=e30] [cursor=pointer]:
+          - /url: /signup
+          - img [ref=e31]
+          - text: Create account
+  - main [ref=e34]:
+    - generic [ref=e35]:
+      - generic [ref=e37]:
+        - generic [ref=e38]:
+          - paragraph [ref=e39]: Medical appointment scheduling
+          - heading "Appointments that do not collide" [level=1] [ref=e40]
+          - paragraph [ref=e41]: Real-time slots, reliable confirmation, and a booking record that stays clear for both patients and teams.
+          - generic [ref=e42]:
+            - link "Start booking" [ref=e43] [cursor=pointer]:
+              - /url: /book/demo-general
+            - link "Explore system" [ref=e44] [cursor=pointer]:
+              - /url: "#workspace"
+        - generic [ref=e46]:
+          - generic [ref=e47]:
+            - generic [ref=e48]:
+              - paragraph [ref=e49]: Live booking board
+              - paragraph [ref=e50]: General Checkup
+            - generic [ref=e51]:
+              - generic [ref=e52]: 2 people viewing
+              - generic [ref=e53]: ₹600
+          - generic [ref=e54]:
+            - generic [ref=e55]:
+              - generic [ref=e56]:
+                - generic [ref=e57]:
+                  - paragraph [ref=e58]: Calendar
+                  - paragraph [ref=e59]: May 2, 2026
+                - generic [ref=e60]: Day view
+              - generic [ref=e61]:
+                - generic [ref=e62]:
+                  - generic [ref=e63]: 09:00
+                  - generic [ref=e64]: Scheduled
+                - generic [ref=e65]:
+                  - generic [ref=e66]: 10:00
+                  - generic [ref=e67]: Scheduled
+                - generic [ref=e68]:
+                  - generic [ref=e69]: 11:00
+                  - generic [ref=e70]: Open slots
+                - generic [ref=e71]:
+                  - generic [ref=e72]: 12:00
+                  - generic [ref=e73]: Scheduled
+                - generic [ref=e74]:
+                  - generic [ref=e75]: 14:00
+                  - generic [ref=e76]: Scheduled
+                - generic [ref=e77]:
+                  - generic [ref=e78]: 15:00
+                  - generic [ref=e79]: Scheduled
+                - generic [ref=e80]:
+                  - generic [ref=e81]: 16:00
+                  - generic [ref=e82]: Scheduled
+            - generic [ref=e83]:
+              - generic [ref=e85]:
+                - generic [ref=e86]:
+                  - generic [ref=e87]:
+                    - generic [ref=e88]: 09:30 AM
+                    - generic [ref=e89]: 2 left
+                  - paragraph [ref=e90]: Available to book
+                - generic [ref=e91]:
+                  - generic [ref=e92]:
+                    - generic [ref=e93]: 10:30 AM
+                    - generic [ref=e94]: Booked
+                  - paragraph [ref=e95]: Already taken
+                - generic [ref=e96]:
+                  - generic [ref=e97]:
+                    - generic [ref=e98]: 11:30 AM
+                    - generic [ref=e99]: 1 left
+                  - paragraph [ref=e100]: Slot is filling now
+                - generic [ref=e101]:
+                  - generic [ref=e102]:
+                    - generic [ref=e103]: 03:00 PM
+                    - generic [ref=e104]: 3 left
+                  - paragraph [ref=e105]: Available to book
+              - generic [ref=e106]:
+                - generic [ref=e107]:
+                  - generic [ref=e108]:
+                    - paragraph [ref=e109]: Booking panel
+                    - paragraph [ref=e110]: Dr Mehta - General Physician
+                  - img [ref=e111]
+                - generic [ref=e114]:
+                  - generic [ref=e115]:
+                    - paragraph [ref=e116]: Chosen
+                    - paragraph [ref=e117]: 11:30 AM
+                  - generic [ref=e118]:
+                    - paragraph [ref=e119]: Status
+                    - paragraph [ref=e120]: Ready to confirm
+                  - generic [ref=e121]:
+                    - paragraph [ref=e122]: Verification
+                    - paragraph [ref=e123]: OTP active
+      - generic [ref=e124]:
+        - generic [ref=e125]:
+          - paragraph [ref=e126]: How it works
+          - heading "Availability, booking, and confirmation in one clean sequence." [level=2] [ref=e127]
+        - generic [ref=e128]:
+          - generic [ref=e129]:
+            - generic [ref=e130]:
+              - generic [ref=e131]: "1"
+              - generic [ref=e132]:
+                - paragraph [ref=e133]: Set availability
+                - paragraph [ref=e134]: Open slots appear directly in the calendar.
+            - generic [ref=e136]:
+              - generic [ref=e138]:
+                - generic [ref=e139]: 09:30
+                - generic [ref=e140]: Open
+              - generic [ref=e142]:
+                - generic [ref=e143]: 10:00
+                - generic [ref=e144]: Open
+              - generic [ref=e146]:
+                - generic [ref=e147]: 11:30
+                - generic [ref=e148]: Open
+          - generic [ref=e149]:
+            - generic [ref=e150]:
+              - generic [ref=e151]: "2"
+              - generic [ref=e152]:
+                - paragraph [ref=e153]: Users book instantly
+                - paragraph [ref=e154]: A live slot is selected while others are still watching.
+            - generic [ref=e156]:
+              - generic [ref=e158]:
+                - generic [ref=e159]: 09:30 AM
+                - generic [ref=e160]: 2 left
+              - generic [ref=e162]:
+                - generic [ref=e163]: 10:30 AM
+                - generic [ref=e164]: 2 viewing
+              - generic [ref=e166]:
+                - generic [ref=e167]: 11:30 AM
+                - generic [ref=e168]: 1 left
+          - generic [ref=e169]:
+            - generic [ref=e170]:
+              - generic [ref=e171]: "3"
+              - generic [ref=e172]:
+                - paragraph [ref=e173]: System confirms and updates
+                - paragraph [ref=e174]: The board updates as soon as the slot is taken.
+            - generic [ref=e176]:
+              - generic [ref=e178]:
+                - generic [ref=e179]: 10:30 AM
+                - generic [ref=e180]: Booked
+              - generic [ref=e182]:
+                - generic [ref=e183]: Confirmation sent
+                - generic [ref=e184]: Updated
+      - generic [ref=e187]:
+        - generic [ref=e188]:
+          - paragraph [ref=e189]: Customer and organiser view
+          - heading "See your entire schedule at a glance" [level=2] [ref=e190]
+          - paragraph [ref=e191]: Patients get a clear path into booking, and organisers get a proper schedule board with live movement.
+          - generic [ref=e192]:
+            - generic [ref=e193]:
+              - paragraph [ref=e194]: Customer view
+              - paragraph [ref=e195]: Upcoming visit, selected slot, and confirmation state.
+            - generic [ref=e196]:
+              - paragraph [ref=e197]: Organiser view
+              - paragraph [ref=e198]: Daily and weekly visibility with multiple active time blocks.
+        - generic [ref=e199]:
+          - generic [ref=e200]:
+            - generic [ref=e201]:
+              - paragraph [ref=e202]: Organiser dashboard
+              - paragraph [ref=e203]: Weekly schedule
+            - generic [ref=e204]:
+              - generic [ref=e205]: Daily
+              - generic [ref=e206]: Weekly
+          - generic [ref=e207]:
+            - generic [ref=e208]:
+              - generic [ref=e209]: Time
+              - generic [ref=e210]: Mon
+              - generic [ref=e211]: Tue
+              - generic [ref=e212]: Wed
+              - generic [ref=e213]: Thu
+              - generic [ref=e214]: Fri
+            - generic [ref=e215]:
+              - generic [ref=e217]: 09:00
+              - generic [ref=e224]: 10:00
+              - generic [ref=e231]: 11:00
+              - generic [ref=e238]: 12:00
+              - generic [ref=e245]: 14:00
+              - generic [ref=e252]: 15:00
+              - generic [ref=e259]: 16:00
+              - generic:
+                - generic:
+                  - paragraph: General Checkup
+                  - paragraph: 10:00 - 10:30
+                - generic:
+                  - paragraph: Follow-up
+                  - paragraph: 11:30 - 12:00
+                - generic:
+                  - paragraph: Skin Review
+                  - paragraph: 03:00 - 03:20
+                - generic:
+                  - paragraph: Dental Review
+                  - paragraph: 09:30 - 10:15
+      - generic [ref=e266]:
+        - generic [ref=e267]:
+          - img [ref=e269]
+          - text: No double booking
+        - generic [ref=e272]:
+          - img [ref=e274]
+          - text: Real-time updates
+        - generic [ref=e277]:
+          - img [ref=e279]
+          - text: Verified users
+      - generic [ref=e282]:
+        - generic [ref=e283]:
+          - paragraph [ref=e284]: Roles
+          - heading "Focused views for each side of the system." [level=2] [ref=e285]
+        - generic [ref=e286]:
+          - article [ref=e287]:
+            - generic [ref=e288]:
+              - heading "Patients" [level=3] [ref=e289]
+              - img [ref=e291]
+            - generic [ref=e296]: Book in seconds
+          - article [ref=e297]:
+            - generic [ref=e298]:
+              - heading "Organisers" [level=3] [ref=e299]
+              - img [ref=e301]
+            - generic [ref=e305]: Control availability
+          - article [ref=e306]:
+            - generic [ref=e307]:
+              - heading "Admins" [level=3] [ref=e308]
+              - img [ref=e310]
+            - generic [ref=e312]: Monitor operations
+      - generic [ref=e313]:
+        - paragraph [ref=e314]: Start scheduling without chaos
+        - link "Create account" [ref=e316] [cursor=pointer]:
+          - /url: /signup
+          - text: Create account
+          - img [ref=e317]
+  - contentinfo [ref=e319]:
+    - generic [ref=e320]:
+      - generic [ref=e321]:
+        - paragraph [ref=e322]: Schedulix
+        - heading "Medical scheduling that feels trustworthy from the first click." [level=2] [ref=e323]
+        - paragraph [ref=e324]: OTP verification, live slot visibility, downloadable receipts, and local medical-image support are now part of the product flow.
+      - generic [ref=e325]:
+        - generic [ref=e326]:
+          - paragraph [ref=e327]: Platform
+          - generic [ref=e328]:
+            - link "Live booking board" [ref=e329] [cursor=pointer]:
+              - /url: /
+            - link "Service directory" [ref=e330] [cursor=pointer]:
+              - /url: /home
+            - link "Workspace access" [ref=e331] [cursor=pointer]:
+              - /url: /login
+        - generic [ref=e332]:
+          - paragraph [ref=e333]: Patient
+          - generic [ref=e334]:
+            - link "Bookings" [ref=e335] [cursor=pointer]:
+              - /url: /my-bookings
+            - link "Payments" [ref=e336] [cursor=pointer]:
+              - /url: /payment
+            - link "Profile" [ref=e337] [cursor=pointer]:
+              - /url: /profile
+        - generic [ref=e338]:
+          - paragraph [ref=e339]: Organizer
+          - generic [ref=e340]:
+            - link "Dashboard" [ref=e341] [cursor=pointer]:
+              - /url: /organiser/dashboard
+            - link "Services" [ref=e342] [cursor=pointer]:
+              - /url: /organiser/appointments
+            - link "Bookings" [ref=e343] [cursor=pointer]:
+              - /url: /organiser/bookings

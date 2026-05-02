@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
-import env from "../config/env.js";
 import User from "../models/User.js";
 import { sendVerificationEmail } from "../utils/email.js";
+import { buildVerificationLink } from "../utils/publicUrls.js";
 import { ApiError, asyncHandler, parseDate, toPublicUser } from "../utils/helpers.js";
 import { verificationPayload } from "../utils/token.js";
 
@@ -90,9 +90,7 @@ export const updateProfile = asyncHandler(async (req, res) => {
       user.verificationTokenExpiry = new Date(Date.now() + LINK_TTL_MS);
       verificationRequired = true;
 
-      const link = `${env.apiBaseUrl}/auth/verify-link?token=${encodeURIComponent(
-        rawToken
-      )}`;
+      const link = buildVerificationLink(rawToken);
 
       await sendVerificationEmail({
         to: normalizedEmail,

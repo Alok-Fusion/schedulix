@@ -4,11 +4,13 @@ import env from "./config/env.js";
 import { createServer } from "http";
 import { initSocket } from "./socket.js";
 import { startBookingReminderLoop } from "./utils/bookingNotifications.js";
+import { verifyEmailTransport } from "./utils/email.js";
 import seedDefaultAdmin from "./utils/seedAdmin.js";
 
 const start = async () => {
   await connectDB();
   await seedDefaultAdmin();
+  await verifyEmailTransport();
   startBookingReminderLoop();
   const server = createServer(app);
   initSocket(server);

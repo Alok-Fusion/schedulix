@@ -1,25 +1,50 @@
 import nodemailer from "nodemailer";
 import env from "../config/env.js";
+import { ApiError } from "./helpers.js";
 
 let cachedTransporter;
+let transportVerified = false;
+
+const hasSmtpHost = () => Boolean(env.smtp.host);
+const hasSmtpAuth = () => Boolean(env.smtp.user && env.smtp.pass);
+
+const previewModeMessage = () =>
+  "[email] SMTP is not configured. Emails will be generated locally only.";
 
 const getTransporter = () => {
   if (cachedTransporter) return cachedTransporter;
 
-  if (env.smtp.host) {
+  if (env.nodeEnv === "test") {
+    cachedTransporter = nodemailer.createTransport({
+      jsonTransport: true
+    });
+    return cachedTransporter;
+  }
+
+  if (hasSmtpHost()) {
     cachedTransporter = nodemailer.createTransport({
       host: env.smtp.host,
       port: env.smtp.port,
       secure: env.smtp.secure,
+      requireTLS: !env.smtp.secure && env.smtp.port === 587,
       auth:
-        env.smtp.user && env.smtp.pass
+        hasSmtpAuth()
           ? {
               user: env.smtp.user,
               pass: env.smtp.pass
             }
-          : undefined
+          : undefined,
+      connectionTimeout: 15000,
+      greetingTimeout: 15000,
+      socketTimeout: 20000
     });
     return cachedTransporter;
+  }
+
+  if (env.nodeEnv === "production") {
+    throw new Error(
+      "SMTP is not configured for production. Set SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, EMAIL_FROM, and CLIENT_BASE_URL in your deployment environment."
+    );
   }
 
   cachedTransporter = nodemailer.createTransport({
@@ -28,20 +53,81 @@ const getTransporter = () => {
   return cachedTransporter;
 };
 
-export const sendEmail = async ({ to, subject, text, html }) => {
-  const info = await getTransporter().sendMail({
-    from: env.emailFrom,
-    to,
-    subject,
-    text,
-    html
-  });
+export const verifyEmailTransport = async () => {
+  if (transportVerified) return;
 
-  if (!env.smtp.host && env.nodeEnv !== "test") {
-    console.log("Email generated:", info.message);
+  if (
+    env.nodeEnv === "production" &&
+    /localhost/i.test(env.clientBaseUrl || "")
+  ) {
+    throw new Error(
+      "CLIENT_BASE_URL still points to localhost. Set it to your deployed frontend URL so verification and reset links work in production."
+    );
   }
 
-  return info;
+  const transporter = getTransporter();
+
+  if (!hasSmtpHost()) {
+    if (env.nodeEnv !== "test") {
+      console.log(previewModeMessage());
+    }
+    transportVerified = true;
+    return;
+  }
+
+  await transporter.verify();
+  transportVerified = true;
+
+  if (env.nodeEnv !== "test") {
+    console.log(
+      `[email] SMTP ready on ${env.smtp.host}:${env.smtp.port} as ${env.emailFrom}`
+    );
+  }
+};
+
+export const sendEmail = async ({ to, subject, text, html }) => {
+  try {
+    const info = await getTransporter().sendMail({
+      from: env.emailFrom,
+      to,
+      subject,
+      text,
+      html
+    });
+
+    if (!hasSmtpHost() && env.nodeEnv !== "test") {
+      console.log("Email generated:", info.message);
+    }
+
+    if (hasSmtpHost() && env.nodeEnv !== "test") {
+      const accepted = (info.accepted || []).join(", ");
+      const rejected = (info.rejected || []).join(", ");
+
+      console.log(
+        `[email] Sent "${subject}" to ${accepted || String(to)}`
+      );
+
+      if (rejected) {
+        console.warn(`[email] Rejected recipients: ${rejected}`);
+      }
+    }
+
+    return info;
+  } catch (error) {
+    console.error("[email] Delivery failed", {
+      subject,
+      to,
+      host: env.smtp.host || "preview",
+      code: error.code,
+      command: error.command,
+      response: error.response
+    });
+
+    throw new ApiError(
+      503,
+      "Email delivery is unavailable right now. Check SMTP settings in the deployed backend."
+    );
+  }
 };
 
 const escapeHtml = (value) =>
