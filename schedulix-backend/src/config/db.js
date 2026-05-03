@@ -12,11 +12,19 @@ export const connectDB = async () => {
     console.error("MongoDB connection error:", error.message);
   });
 
-  await mongoose.connect(env.mongoUri, {
+  const isCloudUri = /^mongodb\+srv:\/\//i.test(env.mongoUri) ||
+    !/localhost|127\.0\.0\.1/i.test(env.mongoUri);
+
+  const opts = {
     autoIndex: env.nodeEnv !== "production",
-    tls: true,
-    tlsAllowInvalidCertificates: env.nodeEnv === "production"
-  });
+  };
+
+  if (isCloudUri) {
+    opts.tls = true;
+    opts.tlsAllowInvalidCertificates = env.nodeEnv === "production";
+  }
+
+  await mongoose.connect(env.mongoUri, opts);
 };
 
 export default connectDB;
